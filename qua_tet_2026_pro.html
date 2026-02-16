@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Năm Mới 2026 - Bính Ngọ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tet-red: #8B0000;
+            --gold-gradient: linear-gradient(to bottom, #FFEA7C, #FDB927, #B87300);
+            --gold-color: #FDB927;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: radial-gradient(circle, #B22222, #8B0000, #4A0000);
+            font-family: 'Roboto Slab', serif;
+        }
+
+        /* --- Canvas Pháo hoa --- */
+        #canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+        /* --- Màn hình chờ --- */
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 100;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+        }
+        #overlay h2 {
+            color: var(--gold-color); border: 3px solid var(--gold-color);
+            padding: 20px 40px; border-radius: 50px; animation: pulse 1.5s infinite;
+        }
+
+        /* --- Cành đào & Pháo treo góc --- */
+        .decor {
+            position: fixed; top: 0; width: 300px; height: 300px; z-index: 5;
+            background-size: contain; background-repeat: no-repeat; pointer-events: none;
+        }
+        .decor-left { left: 0; background-image: url('https://png.pngtree.com/png-vector/20240125/ourmid/pngtree-chinese-new-year-flower-decoration-png-image_11494632.png'); }
+        .decor-right { right: 0; transform: scaleX(-1); background-image: url('https://png.pngtree.com/png-vector/20240125/ourmid/pngtree-chinese-new-year-flower-decoration-png-image_11494632.png'); }
+
+        /* --- NỘI DUNG CHÍNH TRƯỢT LÊN --- */
+        .main-content {
+            position: absolute; left: 50%; top: 150%; /* Bắt đầu ở dưới */
+            transform: translate(-50%, -50%); width: 90%; max-width: 900px;
+            text-align: center; z-index: 20; display: none;
+        }
+        .active-slide { animation: slideUp 3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        @keyframes slideUp { 0% { top: 150%; opacity: 0; } 100% { top: 50%; opacity: 1; } }
+
+        .title-3d {
+            font-family: 'Montserrat', sans-serif; font-size: 4rem; margin: 0;
+            color: #FFEA7C; text-shadow: 3px 3px 0 #B87300, 6px 6px 10px rgba(0,0,0,0.5);
+        }
+
+        .year-box { display: flex; justify-content: center; align-items: center; margin: 10px 0; }
+        .god-wealth { width: 120px; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); margin-right: -20px; z-index: 2; }
+        .year-2026 {
+            font-family: 'Montserrat', sans-serif; font-size: 10rem; font-weight: 900;
+            background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.6));
+        }
+
+        .wish-text {
+            font-size: 1.6rem; color: white; line-height: 1.6;
+            text-shadow: 2px 2px 10px #000; background: rgba(0,0,0,0.4);
+            padding: 20px; border-radius: 15px; border: 1px solid var(--gold-color);
+        }
+
+        /* --- Hiệu ứng bay lượn --- */
+        .lixi { position: fixed; font-size: 40px; z-index: 30; top: -10%; animation: fall linear infinite; }
+        .hny-text { position: fixed; color: rgba(255, 234, 124, 0.2); font-weight: 900; z-index: 2; pointer-events: none; white-space: nowrap; }
+        @keyframes fall { to { top: 110%; transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+        /* --- Nút Nhạc --- */
+        #music-btn {
+            position: fixed; bottom: 20px; right: 20px; z-index: 100;
+            background: rgba(0,0,0,0.7); color: var(--gold-color);
+            padding: 10px 20px; border: 2px solid var(--gold-color);
+            border-radius: 30px; cursor: pointer; display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay" onclick="startApp()">
+        <h2>🧧 KHAI HOẢ ĐÓN XUÂN 2026 🎇</h2>
+    </div>
+
+    <canvas id="canvas"></canvas>
+    <div class="decor decor-left"></div>
+    <div class="decor decor-right"></div>
+
+    <div class="main-content" id="content">
+        <h1 class="title-3d">CHÚC MỪNG NĂM MỚI</h1>
+        <div class="year-box">
+            <img src="thantaimayman.png" class="god-wealth" alt="Thần Tài">
+            <span class="year-2026">2026</span>
+        </div>
+        <div class="wish-text">
+            Chúc mọi người năm mới vạn sự như ý, triệu sự như mơ, <br>
+            trăm sự bất ngờ, hàng giờ hạnh phúc và bình an <br>
+            đi qua xuân thu bốn mùa, có thể ngắm ngàn vạn phong cảnh rực rỡ.
+        </div>
+    </div>
+
+    <button id="music-btn" onclick="toggleMusic()">🔊 Nhạc: Bật</button>
+
+    <audio id="audio" loop>
+        <source src="VIRAL CLIP - MỘT NĂM MỚI BÌNH AN _ SƠN TÙNG M-TP - (128 Kbps).mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const audio = document.getElementById('audio');
+        let fireworks = [], particles = [];
+
+        function startApp() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('content').classList.add('active-slide');
+            document.getElementById('music-btn').style.display = 'block';
+            
+            audio.play().catch(() => console.log("Cần tương tác người dùng để phát nhạc"));
+            
+            setInterval(createLixi, 1000);
+            setInterval(createHNY, 2500);
+            render();
+        }
+
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+                document.getElementById('music-btn').innerText = "🔊 Nhạc: Bật";
+            } else {
+                audio.pause();
+                document.getElementById('music-btn').innerText = "🔇 Nhạc: Tắt";
+            }
+        }
+
+        function createLixi() {
+            const l = document.createElement('div');
+            l.className = 'lixi'; l.innerText = '🧧';
+            l.style.left = Math.random() * 95 + 'vw';
+            l.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            document.body.appendChild(l);
+            setTimeout(() => l.remove(), 7000);
+        }
+
+        function createHNY() {
+            const h = document.createElement('div');
+            h.className = 'hny-text'; h.innerText = 'HAPPY NEW YEAR 2026';
+            h.style.top = Math.random() * 90 + 'vh';
+            h.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            document.body.appendChild(h);
+            h.animate([{ left: '-300px' }, { left: '110vw' }], { duration: 12000 }).onfinish = () => h.remove();
+        }
+
+        // --- Pháo hoa Canvas ---
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        function render() {
+            requestAnimationFrame(render);
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = 'rgba(139, 0, 0, 0.2)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'lighter';
+
+            if (Math.random() < 0.05) fireworks.push(new Firework());
+            fireworks.forEach((f, i) => {
+                f.update(); f.draw();
+                if (f.done) fireworks.splice(i, 1);
+            });
+            particles.forEach((p, i) => {
+                p.update(); p.draw();
+                if (p.alpha <= 0) particles.splice(i, 1);
+            });
+        }
+
+        class Firework {
+            constructor() {
+                this.x = Math.random() * canvas.width; this.y = canvas.height;
+                this.ty = Math.random() * canvas.height / 2;
+                this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                this.done = false;
+            }
+            update() {
+                this.y -= 5;
+                if (this.y <= this.ty) {
+                    for (let i = 0; i < 50; i++) particles.push(new Particle(this.x, this.y, this.color));
+                    this.done = true;
+                }
+            }
+            draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, 7); ctx.fill(); }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x; this.y = y; this.color = color;
+                this.vx = (Math.random() - 0.5) * 6; this.vy = (Math.random() - 0.5) * 6;
+                this.alpha = 1;
+            }
+            update() { this.x += this.vx; this.y += this.vy; this.vy += 0.05; this.alpha -= 0.01; }
+            draw() {
+                ctx.save(); ctx.globalAlpha = this.alpha; ctx.fillStyle = this.color;
+                ctx.beginPath(); ctx.arc(this.x, this.y, 1.5, 0, 7); ctx.fill(); ctx.restore();
+            }
+        }
+    </script>
+</body>
+</html>
